@@ -6,11 +6,11 @@ import android.util.Log
 import android.widget.Toast
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.*
 import androidx.compose.animation.core.MutableTransitionState
-import androidx.compose.animation.fadeIn
-import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.*
+import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -31,7 +31,9 @@ import androidx.compose.ui.graphics.drawscope.clipRect
 import androidx.compose.ui.graphics.drawscope.inset
 import androidx.compose.ui.graphics.drawscope.scale
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -56,8 +58,21 @@ class MainActivity : ComponentActivity() {
             }
         }
     }
+
+    override fun onStop() {
+        super.onStop()
+        Log.d("MainActivity", "onStop: ")
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        Log.d("MainActivity", "onRestoreInstanceState: $savedInstanceState")
+    }
+
+
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun Greeting(name: String) {
 //    Row(horizontalArrangement = Arrangement.SpaceAround) {
@@ -232,28 +247,75 @@ fun Greeting(name: String) {
 //        )
 //    }
 
+//    Column {
+//        AnimatedVisibility(
+//            visible = false,
+//            enter = fadeIn(),
+//            exit = fadeOut()
+//        ) {
+//            Box(Modifier.background(Color.LightGray)) {
+//                Box(
+//                    Modifier
+//                        .animateEnterExit(
+//                            enter = slideInVertically(),
+//                            exit = slideOutVertically()
+//                        )
+//                        .size(100.dp, 100.dp)
+//                        .background(Color.Blue)
+//                )
+//                Box(
+//                    Modifier
+//                        .padding(top = 120.dp)
+//                        .animateEnterExit(
+//                            enter = slideInVertically(),
+//                            exit = slideOutVertically()
+//                        )
+//                        .size(100.dp, 100.dp)
+//                        .background(Color.Yellow)
+//                )
+//            }
+//        }
+//    }
+
+//    val count = rememberSaveable {
+//        mutableStateOf(0)
+//    }
+//    Column {
+//        Box(contentAlignment = Alignment.Center,
+//            modifier = Modifier
+//                .background(Color.DarkGray)
+//                .size(200.dp, 200.dp)
+//                .clickable {
+//                    count.value += +1;
+//                }
+//                .pointerInput(Unit) {
+//                    detectTapGestures(
+//                        onPress =
+//                        { Log.d("MainActivity", "onPress") },
+//                        onDoubleTap =
+//                        { Log.d("MainActivity", "onDoubleTap") },
+//                        onLongPress =
+//                        { Log.d("MainActivity", "onLongPress") },
+//                        onTap =
+//                        { Log.d("MainActivity", "onTap")
+//                            count.value += 2;}
+//                    )
+//
+//                }) {
+//            Text(
+//                text = count.value.toString(),
+//                color = Color.White,
+//            )
+//        }
+//    }
+
+    val context = LocalContext.current
+
     Column {
-
-        AnimatedVisibility(
-            visible = false,
-            enter = fadeIn(),
-            exit = fadeOut()
-        ) {
-            Box(Modifier.background(Color.LightGray)) {
-                Box(
-                    Modifier
-                        .size(100.dp, 100.dp)
-                        .background(Color.Blue)
-                )
-                Box(
-                    Modifier
-                        .size(100.dp, 100.dp)
-                        .background(Color.Blue)
-                )
-            }
-        }
+        Box(modifier = Modifier.size(100.dp, 100.dp).background(Color.DarkGray).clickable {
+            Toast.makeText(context, "greeting", Toast.LENGTH_SHORT).show()
+        })
     }
-
 }
 
 @Preview(showBackground = true, device = Devices.PIXEL_4_XL, showSystemUi = true)
